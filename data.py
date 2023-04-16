@@ -14,9 +14,8 @@ def tokenize_inputs(config, tokenizer, examples):
     different_eos = tokenizer.eos_token != "</s>"
     out = {"labels": [], "input_ids": []}
     for prompt, response in zip(examples["prompt"], examples["response"]):
-        if different_eos:
-            if response.count("</s> \n") > 0:
-                response = response.replace("</s> \n", f"{tokenizer.eos_token} \n") 
+        if different_eos and response.count("</s> \n") > 0:
+            response = response.replace("</s> \n", f"{tokenizer.eos_token} \n") 
 
         prompt_len = len(tokenizer(prompt + "\n", return_tensors="pt")["input_ids"][0])
 
@@ -43,7 +42,7 @@ def tokenize_inputs(config, tokenizer, examples):
             labels = torch.cat([labels, torch.full((max_length - len(labels),), -100)])
 
         assert (labels == -100).sum() < len(labels), f"Labels are all -100, something wrong. prompt length {prompt_len} exceeds max length {max_length}" 
-        
+
         if (labels == -100).sum() == len(labels) - 1:
             print(prompt)
             print(response)
@@ -53,9 +52,9 @@ def tokenize_inputs(config, tokenizer, examples):
         out["labels"].append(labels)
         out["input_ids"].append(input_tokens)
 
-    out = {k: torch.stack(v) if isinstance(v, list) else v for k, v in out.items()}
-
-    return out
+    return {
+        k: torch.stack(v) if isinstance(v, list) else v for k, v in out.items()
+    }
 
 
 def load_data(config, tokenizer):

@@ -27,33 +27,35 @@ for file in glob.glob(os.path.join(prompt_generation_dir, "*.jsonl")):
             item['source'] = 'unspecified'
         if 'model_settings' in item:
             item.pop('model_settings', None)
-        
+
         for key in list(item.keys()):
             if key not in ['source', 'prompt', 'response']:
                 #print(item[key])
                 item.pop(key, None)
-        
-        if isinstance(item['prompt'], dict):
-            if "value" in item["prompt"]:
-                item["prompt"] = item["prompt"]["value"]
-            elif "description" in item["prompt"]:
-                item["prompt"] = item["prompt"]["description"]
-            else:
-                continue
-                
-        elif not isinstance(item['prompt'], str):
-            continue
-        
-        if isinstance(item['response'], dict):
-            if "value" in item["response"]:
-                item["response"] = item["response"]["value"]
-            elif "description" in item["response"]:
-                item["response"] = item["response"]["description"]
-            else:
-                continue 
-        elif not isinstance(item['response'], str):
+
+        if isinstance(item['prompt'], dict) and "value" in item["prompt"]:
+            item["prompt"] = item["prompt"]["value"]
+        elif (
+            isinstance(item['prompt'], dict)
+            and "description" in item["prompt"]
+        ):
+            item["prompt"] = item["prompt"]["description"]
+        elif isinstance(item['prompt'], dict) or not isinstance(
+            item['prompt'], str
+        ):
             continue
 
+        if isinstance(item['response'], dict) and "value" in item["response"]:
+            item["response"] = item["response"]["value"]
+        elif (
+            isinstance(item['response'], dict)
+            and "description" in item["response"]
+        ):
+            item["response"] = item["response"]["description"]
+        elif isinstance(item['response'], dict) or not isinstance(
+            item['response'], str
+        ):
+            continue
         if item:
             processed.append(item)
 
