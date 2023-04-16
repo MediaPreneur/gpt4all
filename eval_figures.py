@@ -13,10 +13,8 @@ for fpath in glob.glob('./eval_data/*.pkl'):
         perplexities = np.nan_to_num(perplexities, 100)
         perplexities = np.clip(perplexities, 0, 100)
         if 'alpaca' not in fpath:
-            identifier = model_name = "-".join(fpath.replace(".pkl", "").split("eval__model-")[1:]) 
-            label = 'GPT4all-'
-            label += identifier
-            
+            identifier = model_name = "-".join(fpath.replace(".pkl", "").split("eval__model-")[1:])
+            label = f'GPT4all-{identifier}'
         else:
             label = 'alpaca-lora'
         plt.hist(perplexities, label=label, alpha=.5, bins=50)

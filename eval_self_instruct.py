@@ -43,7 +43,7 @@ def setup_model(config):
 def eval_example(model, tokenizer, example, config):
 
     prompt = example['instruction'] + ' ' + example['instances'][0]['input']
-    gt = prompt + ' ' + example['instances'][0]['output']
+    gt = f'{prompt} ' + example['instances'][0]['output']
 
     #decode several continuations and compute their page trajectories
     input = tokenizer(prompt, return_tensors="pt")
@@ -79,7 +79,7 @@ def eval_example(model, tokenizer, example, config):
 
     print(prompt)
     print(80*'-')
-   
+
 
     return ppl
 

@@ -22,9 +22,7 @@ def calc_cross_entropy_no_reduction(lm_logits, labels):
     shift_labels = labels[..., 1:].contiguous()
     # Flatten the tokens
     loss_fct = nn.CrossEntropyLoss(reduction='none')
-    loss = loss_fct(shift_logits.permute(0, 2, 1), shift_labels).mean(dim=1)
-
-    return loss
+    return loss_fct(shift_logits.permute(0, 2, 1), shift_labels).mean(dim=1)
 
 
 def rank0_print(msg):
